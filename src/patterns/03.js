@@ -1,4 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useCallback,
+  useContext,
+  useMemo,
+  createContext
+} from 'react'
 import cn from 'classnames'
 import mojs from 'mo-js'
 import PraySVG from '../assets/noun_pray_28959.svg'
@@ -8,19 +16,23 @@ import styles from './index.css'
  * Custom Hook for animation
  */
 
-const useCapAnimation = () => {
-  const [timelineElements, setTimelineElements] = useState({})
+const useCapAnimation = ({
+  clapEl = null,
+  countTotalEl = null,
+  countEl = null
+}) => {
   const [animationTimeline, setAnimationTimeline] = useState(() => new mojs.Timeline())
-  const {
-    clapEl = null,
-    countTotalEl = null,
-    countEl = null
-  } = timelineElements
 
-  useEffect(() => {
+  console.log('useCapAnimation render');
+
+  useLayoutEffect(() => {
+    const tlDuration = 300
+
+    console.log('useCapAnimation -> useLayoutEffect');
+
+    console.log('animation items', clapEl, countTotalEl, countEl);
     if (!clapEl || !countTotalEl || !countEl) return
 
-    const tlDuration = 300
     const scaleButton = new mojs.Html({
       el: clapEl,
       duration: tlDuration,
@@ -93,9 +105,12 @@ const useCapAnimation = () => {
     setAnimationTimeline(newAnimationTimeline)
   }, [clapEl, countTotalEl, countEl])
 
-  return [animationTimeline, setTimelineElements]
+  return animationTimeline
 }
 
+
+const MediumClapContext = createContext()
+const { Provider } = MediumClapContext
 
 const initialState = {
   count: 0,
@@ -103,22 +118,23 @@ const initialState = {
   isClicked: false
 }
 
-
-const MediumClap = () => {
+const MediumClap = ({ children }) => {
   const MAXIMUM_USER_CLAPS = 12
-  const clapRef = useRef(null)
-  const countTotalRef = useRef(null)
-  const countRef = useRef(null)
   const [clapState, setClapState] = useState(initialState)
-  const [animationTimaline, setTimelineElements] = useCapAnimation()
-  const { count, countTotal, isClicked } = clapState
+  const { count } = clapState
+  const [{ clapRef, clapCountTotalRef, clapCountRef }, setRefState] = useState([])
 
-  useEffect(() => {
-    setTimelineElements({
-      clapEl: clapRef.current,
-      countTotalEl: countTotalRef.current,
-      countEl: countRef.current
-    })
+  const animationTimaline = useCapAnimation({
+    clapEl: clapRef,
+    countEl: clapCountRef,
+    countTotalEl: clapCountTotalRef,
+  })
+
+  const setRef = useCallback(node => {
+    setRefState(prev => ({
+      ...prev,
+      [node.dataset.refkey]: node
+    }))
   }, [])
 
   const handleClapClick = () => {
@@ -134,42 +150,60 @@ const MediumClap = () => {
     }))
   }
 
+  const memoizedValue = useMemo(() => ({
+    ...clapState,
+    setRef
+  }), [clapState])
+
   return (
-    <button
-      ref={clapRef}
-      className={styles.clap}
-      onClick={handleClapClick}
-    >
-      <ClapIcon isClicked={isClicked} />
-      <ClapCount ref={countRef} count={count} />
-      <ClapTotal ref={countTotalRef} countTotal={countTotal} />
-    </button>
+    <Provider value={memoizedValue}>
+      <button
+        data-refkey="clapRef"
+        ref={setRef}
+        className={styles.clap}
+        onClick={handleClapClick}
+      >
+        {children}
+      </button>
+    </Provider>
   )
 }
 
-const ClapIcon = ({ isClicked }) => {
+const ClapIcon = () => {
+  const { isClicked } = useContext(MediumClapContext)
   return <span>
     <PraySVG className={cn(styles.icon, isClicked && styles.checked)} />
   </span>
 }
 
-const ClapCount = React.forwardRef(({ count }, ref) => {
+const ClapCount = () => {
+  const { count, setRef } = useContext(MediumClapContext)
   return <span
-    ref={ref}
+    data-refkey="clapCountRef"
+    ref={setRef}
     className={styles.count}
   >
     +{count}
   </span>
-})
+}
 
-const ClapTotal = React.forwardRef(({ countTotal }, ref) => {
+const ClapTotal = () => {
+  const { countTotal, setRef } = useContext(MediumClapContext)
   return <span
-    ref={ref}
+    data-refkey="clapCountTotalRef"
+    ref={setRef}
     className={styles.total}
   >
     {countTotal}
   </span>
-})
+}
 
+const Usage = () => {
+  return <MediumClap>
+    <ClapIcon />
+    <ClapCount />
+    <ClapTotal />
+  </MediumClap>
+}
 
-export default MediumClap
+export default Usage
