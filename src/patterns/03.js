@@ -1,5 +1,7 @@
 import React, {
   useLayoutEffect,
+  useEffect,
+  useRef,
   useState,
   useCallback,
   useContext,
@@ -10,6 +12,19 @@ import cn from 'classnames'
 import mojs from 'mo-js'
 import PraySVG from '../assets/noun_pray_28959.svg'
 import styles from './index.css'
+
+
+function useDidUpdateEffect(fn, inputs) {
+  const didMountRef = useRef(false);
+
+  useEffect(() => {
+    if (didMountRef.current)
+      fn();
+    else
+      didMountRef.current = true;
+  }, inputs);
+}
+
 
 /**
  * Custom Hook for animation
@@ -114,7 +129,7 @@ const initialState = {
   isClicked: false
 }
 
-const MediumClap = ({ children }) => {
+const MediumClap = ({ children, onClap = () => { } }) => {
   const MAXIMUM_USER_CLAPS = 12
   const [clapState, setClapState] = useState(initialState)
   const { count } = clapState
@@ -132,6 +147,11 @@ const MediumClap = ({ children }) => {
       [node.dataset.refkey]: node
     }))
   }, [])
+
+  useDidUpdateEffect(() => {
+    console.log('useEffect handleClap');
+    onClap && onClap(count)
+  }, [count])
 
   const handleClapClick = () => {
     animationTimaline.replay()
@@ -207,12 +227,21 @@ MediumClap.Total = ClapTotal
  */
 
 const Usage = () => {
+  const [count, setCount] = useState(0)
+
+  const handleClap = (count) => {
+    setCount(count)
+  }
+
   return (
-    <MediumClap>
-      <MediumClap.Icon />
-      <MediumClap.Count />
-      <MediumClap.Total />
-    </MediumClap>
+    <div>
+      <MediumClap onClap={handleClap}>
+        <MediumClap.Icon />
+        <MediumClap.Count />
+        <MediumClap.Total />
+      </MediumClap>
+      <div className={styles.info}>{`You have clapped ${count}`}</div>
+    </div>
   )
 }
 
