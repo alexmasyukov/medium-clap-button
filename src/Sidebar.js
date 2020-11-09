@@ -94,7 +94,6 @@ const Sidebar = ({ setShowSidebar }) => {
   const handleClick = () => setShowSidebar(v => !v)
   return (
     <StyledSidebar onClick={handleClick}>
-      <LogoArea />
       <StyledNavigation>
         {NAV_ITEMS.map(item => (
           <Link

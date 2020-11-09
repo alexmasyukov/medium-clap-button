@@ -5,6 +5,10 @@ import PraySVG from '../assets/noun_pray_28959.svg'
 import styles from './index.css'
 import { useState } from 'react'
 
+/** 
+ * HOC
+ */
+
 const withClapAntimation = (WrappedComponent) => {
   class withClapAntimation extends React.Component {
     animationTimeline = new mojs.Timeline()

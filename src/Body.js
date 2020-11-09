@@ -101,12 +101,7 @@ const Header = ({ title, patternNumber }) => {
         </StyledInfoContainer>
       )}
       <H1>{title}</H1>
-      <div ref={setRef} data-refkey='lightBulbEl'>
-        <InfoIllustration
-          style={{ width: '30px', marginLeft: '5px', cursor: 'pointer' }}
-          onClick={toggleInfo}
-        />
-      </div>
+      
     </StyledHeader>
   )
 }
@@ -149,11 +144,6 @@ const RouteComponent = ({ pattern, patternNumber, isMediumOrLarger }) => {
           <Box isPrimary note={NOTES[patternNumber]}>
             <Demo1 />
           </Box>
-          {isMediumOrLarger && (
-            <CTAContainer alignRight>
-              <Button text={`Why ${title}?`} primary />
-            </CTAContainer>
-          )}
         </Column>
         <Column leftGap>
           <Box
@@ -162,18 +152,8 @@ const RouteComponent = ({ pattern, patternNumber, isMediumOrLarger }) => {
           >
             <Demo2 />
           </Box>
-          {!isMediumOrLarger && (
-            <CTAContainer>
-              <Button text={`Why ${title}?`} primary />
-            </CTAContainer>
-          )}
-          <CTAContainer mtop={!isMediumOrLarger && '10px'}>
-            <Button
-              text='Code Implementation'
-              Icon={<GithubLogo style={{ width: '18px' }} />}
-              onClick={goToCodeImplementatiomn}
-            />
-          </CTAContainer>
+         
+         
         </Column>
       </Columns>
     </StyledContentContainer>
