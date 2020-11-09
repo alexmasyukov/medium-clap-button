@@ -11,10 +11,10 @@ import styles from './index.css'
 const useCapAnimation = () => {
   const [timelineElements, setTimelineElements] = useState({})
   const [animationTimeline, setAnimationTimeline] = useState(() => new mojs.Timeline())
-  const { 
-    clapEl = null, 
-    clapCountTotalEl = null, 
-    clapCountEl = null 
+  const {
+    clapEl = null,
+    countTotalEl = null,
+    countEl = null
   } = timelineElements
 
   console.log('useCapAnimation render');
@@ -24,8 +24,8 @@ const useCapAnimation = () => {
 
     console.log('useCapAnimation -> useLayoutEffect');
 
-    console.log(clapEl, clapCountTotalEl, clapCountEl);
-    if (!clapEl || !clapCountTotalEl || !clapCountEl) return
+    console.log(clapEl, countTotalEl, countEl);
+    if (!clapEl || !countTotalEl || !countEl) return
 
 
 
@@ -37,7 +37,7 @@ const useCapAnimation = () => {
     })
 
     const countAnimation = new mojs.Html({
-      el: clapCountEl,
+      el: countEl,
       opacity: { 0: 1 },
       duration: tlDuration,
       y: { 0: -30 },
@@ -48,7 +48,7 @@ const useCapAnimation = () => {
     })
 
     const countTotalAnimation = new mojs.Html({
-      el: clapCountTotalEl,
+      el: countTotalEl,
       duration: tlDuration,
       opacity: { 0: 1 },
       delay: (3 * tlDuration) / 2,
@@ -99,7 +99,7 @@ const useCapAnimation = () => {
     ])
 
     setAnimationTimeline(newAnimationTimeline)
-  }, [clapEl, clapCountTotalEl, clapCountEl])
+  }, [clapEl, countTotalEl, countEl])
 
   return [animationTimeline, setTimelineElements]
 }
@@ -115,8 +115,8 @@ const initialState = {
 const MediumClap = () => {
   const MAXIMUM_USER_CLAPS = 12
   const clapRef = useRef(null)
-  const clapCountTotalRef = useRef(null)
-  const clapCountRef = useRef(null)
+  const countTotalRef = useRef(null)
+  const countRef = useRef(null)
   const [clapState, setClapState] = useState(initialState)
   const [animationTimaline, setTimelineElements] = useCapAnimation()
   const { count, countTotal, isClicked } = clapState
@@ -124,8 +124,8 @@ const MediumClap = () => {
   useEffect(() => {
     setTimelineElements({
       clapEl: clapRef.current,
-      clapCountTotalEl: clapCountTotalRef.current,
-      clapCountEl: clapCountRef.current
+      countTotalEl: countTotalRef.current,
+      countEl: countRef.current
     })
   }, [])
 
@@ -151,8 +151,8 @@ const MediumClap = () => {
       onClick={handleClapClick}
     >
       <ClapIcon isClicked={isClicked} />
-      <ClapCount ref={clapCountRef} count={count} />
-      <ClapTotal ref={clapCountTotalRef} countTotal={countTotal} />
+      <ClapCount ref={countRef} count={count} />
+      <ClapTotal ref={countTotalRef} countTotal={countTotal} />
     </button>
   )
 }
