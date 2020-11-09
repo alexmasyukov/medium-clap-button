@@ -1,5 +1,4 @@
 import React, {
-  useEffect,
   useLayoutEffect,
   useState,
   useCallback,
@@ -15,7 +14,6 @@ import styles from './index.css'
 /**
  * Custom Hook for animation
  */
-
 const useCapAnimation = ({
   clapEl = null,
   countTotalEl = null,
@@ -23,14 +21,9 @@ const useCapAnimation = ({
 }) => {
   const [animationTimeline, setAnimationTimeline] = useState(() => new mojs.Timeline())
 
-  console.log('useCapAnimation render');
-
   useLayoutEffect(() => {
     const tlDuration = 300
 
-    console.log('useCapAnimation -> useLayoutEffect');
-
-    console.log('animation items', clapEl, countTotalEl, countEl);
     if (!clapEl || !countTotalEl || !countEl) return
 
     const scaleButton = new mojs.Html({
@@ -112,6 +105,9 @@ const useCapAnimation = ({
 const MediumClapContext = createContext()
 const { Provider } = MediumClapContext
 
+/**
+ * base component
+ */
 const initialState = {
   count: 0,
   countTotal: 250,
@@ -169,6 +165,10 @@ const MediumClap = ({ children }) => {
   )
 }
 
+/**
+ * subcomponents
+ */
+
 const ClapIcon = () => {
   const { isClicked } = useContext(MediumClapContext)
   return <span>
@@ -198,12 +198,22 @@ const ClapTotal = () => {
   </span>
 }
 
+MediumClap.Icon = ClapIcon
+MediumClap.Count = ClapCount
+MediumClap.Total = ClapTotal
+
+/**
+ * How use
+ */
+
 const Usage = () => {
-  return <MediumClap>
-    <ClapIcon />
-    <ClapCount />
-    <ClapTotal />
-  </MediumClap>
+  return (
+    <MediumClap>
+      <MediumClap.Icon />
+      <MediumClap.Count />
+      <MediumClap.Total />
+    </MediumClap>
+  )
 }
 
 export default Usage
