@@ -4,17 +4,29 @@
     color: #896EAF;
 }
 
- /* count */ 
-.count {
-    background: #896EAF; 
+.icon {
+    stroke: #896EAF;
 }
 
- /* clap */ 
-.clap {
-    border: 1px solid #896EAF; 
+.icon.checked {
+    fill: #896EAF;
 }
+
+
+
+
+/* count */
+.count {
+    background: #896EAF;
+}
+
+/* clap */
+.clap {
+    border: 1px solid #896EAF;
+}
+
 .clap:hover {
-    border: 1px solid #896EAF; 
+    border: 1px solid #896EAF;
 }
 
 .cupContainer {
@@ -26,21 +38,26 @@
 .cupBody {
     display: flex;
 }
-.cupStream > svg{
+
+.cupStream>svg {
     height: 40px;
 }
-.cupBody > svg {
+
+.cupBody>svg {
     min-height: 50px;
 }
+
 /* 1. cup handle  2. cup bowl*/
-.cupBody > svg:nth-child(1) {
+.cupBody>svg:nth-child(1) {
     width: 20%;
 }
-.cupBody > svg:nth-child(2) {
+
+.cupBody>svg:nth-child(2) {
     width: 80%;
     position: relative;
     right: 10px;
 }
+
 .resetBtn {
     border-bottom: 1px solid #bdc3c7;
     color: '#27ae60';
@@ -51,6 +68,7 @@
     display: block;
     width: 100%;
 }
+
 .resetMsg {
     color: black;
 }

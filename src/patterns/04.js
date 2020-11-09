@@ -12,7 +12,9 @@ import cn from 'classnames'
 import mojs from 'mo-js'
 import PraySVG from '../assets/noun_pray_28959.svg'
 import styles from './index.css'
+import userCustomStyles from './usage.css'
 
+const Func = () => { }
 
 function useDidUpdateEffect(fn, inputs) {
   const didMountRef = useRef(false);
@@ -129,7 +131,12 @@ const initialState = {
   isClicked: false
 }
 
-const MediumClap = ({ children, onClap = () => { } }) => {
+const MediumClap = ({
+  children,
+  onClap = Func,
+  style: userStyle = {},
+  className
+}) => {
   const MAXIMUM_USER_CLAPS = 12
   const [clapState, setClapState] = useState(initialState)
   const { count } = clapState
@@ -175,8 +182,9 @@ const MediumClap = ({ children, onClap = () => { } }) => {
       <button
         data-refkey="clapRef"
         ref={setRef}
-        className={styles.clap}
+        className={cn(styles.clap, className)}
         onClick={handleClapClick}
+        style={userStyle}
       >
         {children}
       </button>
@@ -188,30 +196,45 @@ const MediumClap = ({ children, onClap = () => { } }) => {
  * subcomponents
  */
 
-const ClapIcon = () => {
+const ClapIcon = ({
+  style: userStyle = {},
+  className
+}) => {
   const { isClicked } = useContext(MediumClapContext)
-  return <span>
-    <PraySVG className={cn(styles.icon, isClicked && styles.checked)} />
+  return <span style={userStyle}>
+    <PraySVG className={cn(
+      styles.icon,
+      isClicked && styles.checked,
+      className
+    )} />
   </span>
 }
 
-const ClapCount = () => {
+const ClapCount = ({
+  style: userStyle = {},
+  className
+}) => {
   const { count, setRef } = useContext(MediumClapContext)
   return <span
     data-refkey="clapCountRef"
     ref={setRef}
-    className={styles.count}
+    className={cn(styles.count, className)}
+    style={userStyle}
   >
     +{count}
   </span>
 }
 
-const ClapTotal = () => {
+const ClapTotal = ({
+  style: userStyle = {},
+  className
+}) => {
   const { countTotal, setRef } = useContext(MediumClapContext)
   return <span
     data-refkey="clapCountTotalRef"
     ref={setRef}
-    className={styles.total}
+    className={cn(styles.total, className)}
+    style={userStyle}
   >
     {countTotal}
   </span>
@@ -234,10 +257,10 @@ const Usage = () => {
 
   return (
     <div>
-      <MediumClap onClap={handleClap}>
-        <MediumClap.Icon />
-        <MediumClap.Count />
-        <MediumClap.Total />
+      <MediumClap onClap={handleClap} className={userCustomStyles.clap}>
+        <MediumClap.Icon className={userCustomStyles.icon} />
+        <MediumClap.Count className={userCustomStyles.count} />
+        <MediumClap.Total className={userCustomStyles.total} />
       </MediumClap>
       <div className={styles.info}>{`You have clapped ${count}`}</div>
     </div>
